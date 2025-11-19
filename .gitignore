@@ -67,3 +67,10 @@ node_modules/
 
 # dataconnect generated files
 .dataconnect
+
+# Electron build output
+dist/
+out/
+
+# Electron cache
+.cache/

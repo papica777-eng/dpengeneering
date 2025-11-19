@@ -1,0 +1,18 @@
+{
+  "name": "Портфолио на Димитър Продромов",
+  "short_name": "DP Portfolio",
+  "description": "Junior Backend Developer Portfolio - Firebase Project",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4f46e5",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/10823/10823366.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

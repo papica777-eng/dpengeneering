@@ -1,0 +1,52 @@
+{
+  "name": "dp-portfolio-desktop",
+  "version": "1.0.0",
+  "description": "Desktop application for Димитър Продромов Portfolio",
+  "main": "electron/main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder build --win --publish never",
+    "build:all": "electron-builder build -mwl --publish never"
+  },
+  "keywords": [
+    "electron",
+    "firebase",
+    "portfolio",
+    "desktop"
+  ],
+  "author": "Димитър Продромов",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.1"
+  },
+  "build": {
+    "appId": "com.dpengineering.portfolio",
+    "productName": "DP Portfolio",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "electron/**/*",
+      "public/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  }
+}
