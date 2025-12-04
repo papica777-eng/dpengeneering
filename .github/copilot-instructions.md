@@ -110,12 +110,14 @@ firebase deploy
 ```
 
 ### Emulator Ports
-- Auth: 5001
+- Auth: 5001 (Note: conflicts with Functions port in current config)
 - Functions: 5001
 - Firestore: 8080
 - Database: 9001
 - Hosting: 5000
 - Storage: 9199
+
+> **Note**: Auth and Functions are both configured to use port 5001 in `firebase.json`. This may cause conflicts. Consider updating to standard Firebase emulator ports (Auth: 9099, Functions: 5001).
 
 ## Code Conventions
 
