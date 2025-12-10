@@ -13,6 +13,10 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-functions-compat.js"></script>
+
     <style>
 
         /* --- CSS Variables for Theming --- */
@@ -1426,6 +1430,8 @@
 
                     <li><a href="#tasks" class="nav-link" data-page="tasks"><i class="fas fa-robot"></i> Tasks</a></li>
 
+                    <li><a href="#sessions" class="nav-link" data-page="sessions"><i class="fas fa-comments"></i> Sessions</a></li>
+
                     <li><a href="#history" class="nav-link" data-page="history"><i class="fas fa-history"></i> History</a></li>
 
                     <li>
@@ -1559,6 +1565,21 @@
 
     <script>
 
+        // --- Firebase Initialization ---
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "kodi-bot-7.firebaseapp.com",
+            projectId: "kodi-bot-7",
+            storageBucket: "kodi-bot-7.appspot.com",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // Initialize Firebase
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+
         // --- Constants and Global State ---
 
         const APP_CONTENT = document.getElementById('app-content');
@@ -1691,6 +1712,12 @@
 
                     break;
 
+                case 'sessions':
+
+                    contentHtml = await renderSessionsPage(); // Sessions is async
+
+                    break;
+
                 case 'history':
 
                     contentHtml = await renderHistoryPage(); // History might be async
@@ -1718,6 +1745,20 @@
                 document.getElementById('projectName').addEventListener('input', (e) => validateInput(e.target, 'Project Name is required.'));
 
                 document.getElementById('targetUrl').addEventListener('input', (e) => validateInput(e.target, 'Target URL is required.'));
+
+            } else if (pageId === 'sessions') {
+
+                document.getElementById('refreshSessionsBtn').onclick = loadSessions;
+
+                document.getElementById('userIdInput').addEventListener('input', (e) => {
+
+                    const userId = e.target.value.trim() || 'anonymous';
+
+                    localStorage.setItem('currentUserId', userId);
+
+                });
+
+                loadSessions(); // Load sessions when page is rendered
 
             } else if (pageId === 'history') {
 
@@ -1982,6 +2023,60 @@
                     </div>
 
                     <button class="btn btn-secondary" id="refreshHistoryBtn" style="margin-top: 20px;"><i class="fas fa-sync"></i> Refresh History</button>
+
+                </section>
+
+            `;
+
+        }
+
+
+        async function renderSessionsPage() {
+
+            const currentUserId = localStorage.getItem('currentUserId') || 'anonymous';
+
+            return `
+
+                <section id="sessions-content" class="app-section container">
+
+                    <h2><i class="fas fa-comments"></i> Learning Sessions & Statistics</h2>
+
+                    <p>View your conversation history, learning progress, and active sessions with Коди (Kodi).</p>
+
+                    
+
+                    <div class="form-group">
+
+                        <label for="userIdInput"><i class="fas fa-user"></i> User ID:</label>
+
+                        <input type="text" id="userIdInput" value="${currentUserId}" placeholder="Enter your user ID (default: anonymous)">
+
+                        <small style="color: var(--subtle-text-color); display: block; margin-top: 5px;">Enter your user ID to view your personalized learning data.</small>
+
+                    </div>
+
+
+                    <h3 style="margin-top: 30px;">📊 Learning Statistics:</h3>
+
+                    <div id="learning-stats" style="background-color: var(--tertiary-background-color); padding: 20px; border-radius: var(--radius-default); margin-bottom: 20px;">
+
+                        <div class="log-entry default">Loading statistics...</div>
+
+                    </div>
+
+
+                    <h3>💬 Recent Conversations:</h3>
+
+                    <div id="conversations-list">
+
+                        <!-- Conversations will be dynamically loaded here -->
+
+                        <div class="log-entry default">Loading conversations...</div>
+
+                    </div>
+
+
+                    <button class="btn btn-secondary" id="refreshSessionsBtn" style="margin-top: 20px;"><i class="fas fa-sync"></i> Refresh Sessions Data</button>
 
                 </section>
 
@@ -2454,6 +2549,262 @@
         }
 
        
+
+        // --- Sessions Section ---
+
+        async function loadSessions() {
+
+            const learningStatsDiv = document.getElementById('learning-stats');
+
+            const conversationsListDiv = document.getElementById('conversations-list');
+
+            
+
+            if (!learningStatsDiv || !conversationsListDiv) return; // Guard against elements not being rendered yet
+
+
+            const userId = document.getElementById('userIdInput').value.trim() || 'anonymous';
+
+            
+
+            // Show skeleton loaders
+
+            learningStatsDiv.innerHTML = `
+
+                <div class="skeleton-text short"></div>
+
+                <div class="skeleton-text medium"></div>
+
+                <div class="skeleton-text short"></div>
+
+            `;
+
+            
+
+            conversationsListDiv.innerHTML = `
+
+                <div class="project-history-item skeleton" style="min-height: 80px;">
+
+                    <div class="skeleton-text short"></div>
+
+                    <div class="skeleton-text medium"></div>
+
+                </div>
+
+                <div class="project-history-item skeleton" style="min-height: 80px;">
+
+                    <div class="skeleton-text short"></div>
+
+                    <div class="skeleton-text medium"></div>
+
+                </div>
+
+            `;
+
+
+            try {
+
+                // Load learning statistics
+
+                const statsResponse = await firebase.functions().httpsCallable('getUserLearningStats')({
+
+                    userId: userId
+
+                });
+
+                
+
+                const statsData = statsResponse.data;
+
+                
+
+                learningStatsDiv.innerHTML = '';
+
+                
+
+                if (statsData.message) {
+
+                    learningStatsDiv.innerHTML = `<p style="color: var(--subtle-text-color);">${statsData.message}</p>`;
+
+                } else {
+
+                    const firstInteraction = statsData.firstInteraction ? new Date(statsData.firstInteraction._seconds * 1000).toLocaleDateString() : 'N/A';
+
+                    const lastInteraction = statsData.lastInteraction ? new Date(statsData.lastInteraction._seconds * 1000).toLocaleString() : 'N/A';
+
+                    
+
+                    learningStatsDiv.innerHTML = `
+
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+
+                            <div>
+
+                                <strong style="color: var(--primary-color);">Interactions:</strong>
+
+                                <p style="font-size: 1.5em; margin: 5px 0;">${statsData.interactionCount || 0}</p>
+
+                            </div>
+
+                            <div>
+
+                                <strong style="color: var(--primary-color);">First Interaction:</strong>
+
+                                <p style="margin: 5px 0;">${firstInteraction}</p>
+
+                            </div>
+
+                            <div>
+
+                                <strong style="color: var(--primary-color);">Last Interaction:</strong>
+
+                                <p style="margin: 5px 0;">${lastInteraction}</p>
+
+                            </div>
+
+                        </div>
+
+                        <div style="margin-top: 15px;">
+
+                            <strong style="color: var(--primary-color);">Topics Learned:</strong>
+
+                            <p style="margin: 10px 0; line-height: 1.8;">
+
+                                ${statsData.topics && statsData.topics.length > 0 
+
+                                    ? statsData.topics.map(topic => `<span style="background-color: var(--primary-color); color: var(--background-color); padding: 5px 10px; border-radius: 4px; margin-right: 5px; display: inline-block; margin-bottom: 5px;">${topic}</span>`).join('')
+
+                                    : '<span style="color: var(--subtle-text-color);">No topics learned yet</span>'}
+
+                            </p>
+
+                        </div>
+
+                    `;
+
+                }
+
+                
+
+            } catch (error) {
+
+                learningStatsDiv.innerHTML = `<p style="color: var(--accent-color);">❌ Failed to load learning statistics: ${error.message}</p>`;
+
+                showToast(`Failed to load learning statistics: ${error.message}`, 'error');
+
+                console.error("Failed to load learning statistics:", error);
+
+            }
+
+
+            try {
+
+                // Load conversation history
+
+                const conversationsResponse = await firebase.functions().httpsCallable('getConversationHistory')({
+
+                    userId: userId,
+
+                    limit: 10
+
+                });
+
+                
+
+                const conversationsData = conversationsResponse.data;
+
+                
+
+                conversationsListDiv.innerHTML = '';
+
+                
+
+                if (!conversationsData.conversations || conversationsData.conversations.length === 0) {
+
+                    conversationsListDiv.innerHTML = '<div class="log-entry default">No conversations found for this user.</div>';
+
+                    return;
+
+                }
+
+
+                conversationsData.conversations.forEach(conversation => {
+
+                    const conversationDiv = document.createElement('div');
+
+                    conversationDiv.classList.add('project-history-item');
+
+                    
+
+                    const timestamp = conversation.timestamp ? new Date(conversation.timestamp._seconds * 1000).toLocaleString() : 'N/A';
+
+                    const sessionId = conversation.sessionId || 'N/A';
+
+                    const userMessage = conversation.userMessage || '';
+
+                    const aiResponse = conversation.aiResponse || '';
+
+                    
+
+                    conversationDiv.innerHTML = `
+
+                        <h4 style="color: var(--primary-color); margin-bottom: 5px;">
+
+                            Session: ${sessionId} <span style="font-size: 0.8em; color: var(--subtle-text-color);">(${timestamp})</span>
+
+                        </h4>
+
+                        <details style="margin-top: 10px;">
+
+                            <summary style="font-weight: 600; cursor: pointer; color: var(--text-color);">
+
+                                View Conversation
+
+                            </summary>
+
+                            <div style="padding: 10px; margin-top: 10px; background-color: var(--input-bg-color); border-radius: var(--radius-default);">
+
+                                <p style="margin-bottom: 10px;">
+
+                                    <strong style="color: var(--info-color);">User:</strong><br>
+
+                                    <span style="font-family: var(--font-mono); font-size: 0.9em;">${userMessage.substring(0, 200)}${userMessage.length > 200 ? '...' : ''}</span>
+
+                                </p>
+
+                                <p>
+
+                                    <strong style="color: var(--success-color);">Коди:</strong><br>
+
+                                    <span style="font-family: var(--font-mono); font-size: 0.9em;">${aiResponse.substring(0, 300)}${aiResponse.length > 300 ? '...' : ''}</span>
+
+                                </p>
+
+                            </div>
+
+                        </details>
+
+                    `;
+
+                    
+
+                    conversationsListDiv.appendChild(conversationDiv);
+
+                });
+
+
+            } catch (error) {
+
+                conversationsListDiv.innerHTML = `<div class="log-entry error">❌ Failed to load conversations: ${error.message}</div>`;
+
+                showToast(`Failed to load conversations: ${error.message}`, 'error');
+
+                console.error("Failed to load conversations:", error);
+
+            }
+
+        }
+
 
         // --- Event Listeners and Initial Load ---
 
