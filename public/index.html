@@ -1586,13 +1586,27 @@
 
         /**
          * Converts Firebase Timestamp to JavaScript Date
-         * @param {Object} timestamp - Firebase timestamp object with _seconds property
+         * @param {Object} timestamp - Firebase timestamp object
          * @returns {Date|null} JavaScript Date object or null if invalid
          */
         function firebaseTimestampToDate(timestamp) {
-            if (timestamp && timestamp._seconds) {
+            if (!timestamp) return null;
+            
+            // Handle Firebase Timestamp object with toDate() method
+            if (timestamp.toDate && typeof timestamp.toDate === 'function') {
+                return timestamp.toDate();
+            }
+            
+            // Handle plain object with seconds property (from API response)
+            if (timestamp.seconds) {
+                return new Date(timestamp.seconds * 1000);
+            }
+            
+            // Handle plain object with _seconds property (legacy format)
+            if (timestamp._seconds) {
                 return new Date(timestamp._seconds * 1000);
             }
+            
             return null;
         }
 
