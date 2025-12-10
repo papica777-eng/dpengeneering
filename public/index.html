@@ -1566,18 +1566,45 @@
     <script>
 
         // --- Firebase Initialization ---
+        // NOTE: Replace these placeholder values with your actual Firebase project credentials
+        // You can find these in your Firebase Console -> Project Settings -> General
         const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
+            apiKey: "YOUR_API_KEY", // Replace with actual API key
             authDomain: "kodi-bot-7.firebaseapp.com",
             projectId: "kodi-bot-7",
             storageBucket: "kodi-bot-7.appspot.com",
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-            appId: "YOUR_APP_ID"
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID", // Replace with actual sender ID
+            appId: "YOUR_APP_ID" // Replace with actual app ID
         };
 
         // Initialize Firebase
         if (!firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);
+        }
+
+        // --- Utility Helper Functions ---
+
+        /**
+         * Converts Firebase Timestamp to JavaScript Date
+         * @param {Object} timestamp - Firebase timestamp object with _seconds property
+         * @returns {Date|null} JavaScript Date object or null if invalid
+         */
+        function firebaseTimestampToDate(timestamp) {
+            if (timestamp && timestamp._seconds) {
+                return new Date(timestamp._seconds * 1000);
+            }
+            return null;
+        }
+
+        /**
+         * Truncates text to specified length and adds ellipsis
+         * @param {string} text - Text to truncate
+         * @param {number} maxLength - Maximum length before truncation
+         * @returns {string} Truncated text with ellipsis if needed
+         */
+        function truncateText(text, maxLength) {
+            if (!text) return '';
+            return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
         }
 
         // --- Constants and Global State ---
@@ -2560,7 +2587,11 @@
 
             
 
-            if (!learningStatsDiv || !conversationsListDiv) return; // Guard against elements not being rendered yet
+            if (!learningStatsDiv || !conversationsListDiv) {
+                console.error('Required DOM elements not found for Sessions page');
+                showToast('Failed to load Sessions page: Required elements missing', 'error');
+                return;
+            }
 
 
             const userId = document.getElementById('userIdInput').value.trim() || 'anonymous';
@@ -2628,9 +2659,13 @@
 
                 } else {
 
-                    const firstInteraction = statsData.firstInteraction ? new Date(statsData.firstInteraction._seconds * 1000).toLocaleDateString() : 'N/A';
+                    const firstInteractionDate = firebaseTimestampToDate(statsData.firstInteraction);
 
-                    const lastInteraction = statsData.lastInteraction ? new Date(statsData.lastInteraction._seconds * 1000).toLocaleString() : 'N/A';
+                    const lastInteractionDate = firebaseTimestampToDate(statsData.lastInteraction);
+
+                    const firstInteraction = firstInteractionDate ? firstInteractionDate.toLocaleDateString() : 'N/A';
+
+                    const lastInteraction = lastInteractionDate ? lastInteractionDate.toLocaleString() : 'N/A';
 
                     
 
@@ -2736,7 +2771,9 @@
 
                     
 
-                    const timestamp = conversation.timestamp ? new Date(conversation.timestamp._seconds * 1000).toLocaleString() : 'N/A';
+                    const timestampDate = firebaseTimestampToDate(conversation.timestamp);
+
+                    const timestamp = timestampDate ? timestampDate.toLocaleString() : 'N/A';
 
                     const sessionId = conversation.sessionId || 'N/A';
 
@@ -2768,7 +2805,7 @@
 
                                     <strong style="color: var(--info-color);">User:</strong><br>
 
-                                    <span style="font-family: var(--font-mono); font-size: 0.9em;">${userMessage.substring(0, 200)}${userMessage.length > 200 ? '...' : ''}</span>
+                                    <span style="font-family: var(--font-mono); font-size: 0.9em;">${truncateText(userMessage, 200)}</span>
 
                                 </p>
 
@@ -2776,7 +2813,7 @@
 
                                     <strong style="color: var(--success-color);">Коди:</strong><br>
 
-                                    <span style="font-family: var(--font-mono); font-size: 0.9em;">${aiResponse.substring(0, 300)}${aiResponse.length > 300 ? '...' : ''}</span>
+                                    <span style="font-family: var(--font-mono); font-size: 0.9em;">${truncateText(aiResponse, 300)}</span>
 
                                 </p>
 
