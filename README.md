@@ -44,9 +44,11 @@ An intelligent Firebase Cloud Functions-based AI assistant that learns from ever
    ```
 
 3. **Configure API Key**
-   Edit `functions/index.js` and replace the API key:
-   ```javascript
-   const API_KEY = "YOUR_GEMINI_API_KEY_HERE";
+   Set your Gemini key via environment variable or Firebase config:
+   ```bash
+   export GEMINI_API_KEY="YOUR_GEMINI_API_KEY_HERE"
+   # or
+   firebase functions:config:set gemini.api_key="YOUR_GEMINI_API_KEY_HERE"
    ```
 
 4. **Deploy to Firebase**
