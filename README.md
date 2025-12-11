@@ -1,303 +1,212 @@
-# Коди - AI Programming Assistant with Learning and Memory
+# dpengineering - Full-Stack QA Testing Platform
 
-An intelligent Firebase Cloud Functions-based AI assistant that learns from every conversation and provides personalized programming guidance.
+> AI-powered web application testing with Playwright, Selenium, and Gemini AI
 
-## 🚀 Features
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com)
 
-### Core Capabilities
-- **AI-Powered Programming Assistance**: Uses Google's Gemini AI to help with HTML, CSS, JavaScript, and Python
-- **Bulgarian Language Support**: Responds in Bulgarian for local users
-- **Conversational Memory**: Remembers all past interactions
-- **Continuous Learning**: Extracts and tracks programming topics from conversations
-- **Personalized Responses**: Tailors answers based on user's learning history
-- **Multi-User Support**: Maintains separate learning profiles for each user
+## 🚀 Quick Start
 
-### Technical Features
-- Firebase Cloud Functions backend
-- Firestore database for conversation storage
-- Google Generative AI (Gemini) integration
-- RESTful API endpoints
-- Callable Cloud Functions for client integration
-- Automatic topic extraction and categorization
-- Session management
+### Option 1: Deploy to Render (Recommended)
 
-## 📦 Installation
+Click the button above or follow these steps:
 
-### Prerequisites
-- Node.js 22.x (note: currently running on Node 20.x with warnings)
-- Firebase CLI
-- Google Cloud account
-- Gemini API key
+1. Fork this repository
+2. Sign up at [Render.com](https://render.com)
+3. Create a new Web Service
+4. Connect your GitHub repository
+5. Set environment variables:
+   - `GEMINI_API_KEY`: Your Google Gemini API key ([Get one here](https://makersuite.google.com/app/apikey))
+6. Deploy!
 
-### Setup Steps
+Your backend will be live at `https://your-app.onrender.com`
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/papica777-eng/dpengeneering.git
-   cd dpengeneering
-   ```
+### Option 2: Local Development
 
-2. **Install dependencies**
-   ```bash
-   cd functions
-   npm install
-   ```
+```bash
+# Clone repository
+git clone https://github.com/papica777-eng/dpengeneering.git
+cd dpengeneering
 
-3. **Configure API Key**
-   Edit `functions/index.js` and replace the API key:
-   ```javascript
-   const API_KEY = "YOUR_GEMINI_API_KEY_HERE";
-   ```
+# Setup backend
+cd backend
+pip install -r requirements.txt
+playwright install chromium
 
-4. **Deploy to Firebase**
-   ```bash
-   firebase deploy --only functions
-   ```
+# Set API key
+export GEMINI_API_KEY='your-api-key-here'
 
-5. **Deploy Firestore indexes**
-   ```bash
-   firebase deploy --only firestore:indexes
-   ```
-
-## 🔧 API Functions
-
-### 1. `callKodyAPI` (Callable Function)
-Main function for interacting with the AI assistant.
-
-**Parameters:**
-```javascript
-{
-  userId: string,           // User identifier (optional, defaults to 'anonymous')
-  sessionId: string,        // Session identifier (optional)
-  chatHistory: array,       // Previous messages in the conversation
-  userParts: array         // Current user message
-}
+# Start server
+python app.py
 ```
 
-**Returns:**
-```javascript
-{
-  text: string              // AI's response
-}
+Then open `public/index.html` in your browser!
+
+## 🎯 What This Does
+
+Automated QA testing platform that tests websites like a real person:
+
+- **🤖 AI-Powered**: Gemini AI detects bugs intelligently
+- **⚡ Fast**: Playwright for modern browser automation
+- **🔄 Compatible**: Selenium for cross-browser testing
+- **📊 Comprehensive**: 6 test categories
+- **🎨 User-Friendly**: Beautiful web interface
+
+## 🧪 Test Categories
+
+1. **Browser Navigation** - URL validation, redirects, load times
+2. **Element Integrity** - Page structure, content verification
+3. **Performance** - Load times, DNS, TCP, DOM metrics
+4. **Accessibility** - WCAG compliance, alt text, ARIA labels
+5. **Form Testing** - Input fields, buttons, submissions
+6. **Visual Regression** - Screenshots, visual comparison
+
+## 📖 Usage
+
+### Web Interface
+
+1. Open the web interface at your deployed URL or `public/index.html`
+2. Enter project name and target URL
+3. Select test goals
+4. Click "Start Automation"
+5. Review AI-powered results!
+
+### API
+
+```bash
+curl -X POST https://your-app.onrender.com/api/qa_project \
+  -H "Content-Type: application/json" \
+  -d '{
+    "project_name": "My Site Test",
+    "target_url": "https://example.com",
+    "selected_goals": {
+      "Browser Navigation & URL Validation": true,
+      "Performance Metrics & Load Times": true
+    }
+  }'
 ```
 
-**Example:**
-```javascript
-const result = await firebase.functions().httpsCallable('callKodyAPI')({
-    userId: 'user123',
-    chatHistory: [],
-    userParts: ['Как да създам функция в JavaScript?']
-});
-console.log(result.data.text);
+### Python SDK
+
+```python
+from qa_automation import QAAutomation
+
+qa = QAAutomation(
+    project_name="Test",
+    target_url="https://example.com",
+    selected_goals={"Browser Navigation & URL Validation": True},
+    gemini_api_key="your-api-key"
+)
+
+results = qa.execute()
+print(results)
 ```
 
-### 2. `getUserLearningStats` (Callable Function)
-Retrieve learning statistics for a user.
+## 🔧 Configuration
 
-**Parameters:**
-```javascript
-{
-  userId: string            // User identifier
-}
-```
+### Environment Variables
 
-**Returns:**
-```javascript
-{
-  topics: array,            // List of topics discussed
-  preferences: object,      // User preferences
-  firstInteraction: timestamp,
-  lastInteraction: timestamp,
-  interactionCount: number
-}
-```
+Required:
+- `GEMINI_API_KEY` - Your Google Gemini API key
 
-### 3. `getConversationHistory` (Callable Function)
-Get past conversations for a user.
+Optional:
+- `FLASK_ENV` - Set to `production` for production mode
+- `PORT` - Server port (default: 5000)
 
-**Parameters:**
-```javascript
-{
-  userId: string,           // User identifier
-  limit: number            // Maximum number of conversations (default: 10)
-}
-```
+### Get API Key
 
-**Returns:**
-```javascript
-{
-  conversations: array      // Array of conversation objects
-}
-```
-
-### 4. `systemHealth` (HTTP Function)
-Check system health and database connectivity.
-
-**Endpoint:** `GET /systemHealth`
-
-**Returns:**
-```javascript
-{
-  status: string,           // 'OK' or 'ERROR'
-  checks: {
-    server: { status: string, message: string },
-    database: { status: string, message: string }
-  }
-}
-```
-
-### 5. `greetUserDB` (HTTP Function)
-Test database with a greeting function.
-
-**Endpoint:** `GET /greetUserDB?name=<username>`
-
-## 🗄️ Database Schema
-
-### Collection: `conversations`
-Stores all user-AI conversations.
-
-```javascript
-{
-  userId: string,
-  sessionId: string,
-  timestamp: Timestamp,
-  userMessage: string,
-  aiResponse: string,
-  chatHistory: array
-}
-```
-
-**Index:** `userId` (ASC) + `timestamp` (DESC)
-
-### Collection: `user_learning`
-Stores user learning profiles.
-
-```javascript
-{
-  topics: array,            // e.g., ['HTML', 'CSS', 'JavaScript']
-  preferences: object,
-  firstInteraction: Timestamp,
-  lastInteraction: Timestamp,
-  interactionCount: number
-}
-```
-
-### Collection: `users`
-Tracks user visits (from greetUserDB function).
-
-```javascript
-{
-  firstVisit: Date
-}
-```
-
-## 🎯 How Learning Works
-
-1. **User sends a message** → System retrieves their learning profile
-2. **AI generates response** → Enhanced with context from past interactions
-3. **Conversation is saved** → Stored in Firestore for future reference
-4. **Topics are extracted** → Automatically identified from the conversation
-5. **Profile is updated** → New topics and interaction count saved
-
-### Topic Extraction
-The system tracks 20+ programming keywords:
-- **Languages**: HTML, CSS, JavaScript, Python
-- **Bulgarian terms**: функция, клас, променлива, масив, обект, цикъл, условие
-- **English terms**: function, class, array, loop, variable
-- **Technologies**: Firebase, база данни, API
+1. Visit [Google AI Studio](https://makersuite.google.com/app/apikey)
+2. Sign in with Google account
+3. Click "Create API Key"
+4. Copy your key
+5. Set as environment variable
 
 ## 📚 Documentation
 
-- **[LEARNING_SYSTEM.md](LEARNING_SYSTEM.md)** - Comprehensive documentation of the learning system
-- **[USAGE_EXAMPLES.js](USAGE_EXAMPLES.js)** - Code examples for all API functions
+- **[QA_TESTER_README.md](QA_TESTER_README.md)** - Complete feature guide
+- **[DEPLOYMENT.md](DEPLOYMENT.md)** - Self-hosting guide (Nginx, SSL)
+- **[USAGE_GUIDE.md](USAGE_GUIDE.md)** - Step-by-step tutorial
+- **[backend/README.md](backend/README.md)** - API reference
 
-## 🧪 Testing
+## 🏗️ Architecture
 
-Run basic tests:
-```bash
-cd functions
-node test-learning.js
 ```
+Frontend (HTML/React)
+    ↓
+Flask REST API
+    ↓
+┌──────────┬─────────┬──────────┐
+Playwright  Selenium  Gemini AI
+```
+
+## 🛠️ Tech Stack
+
+- **Backend**: Python, Flask, Playwright, Selenium
+- **Frontend**: HTML5, CSS3, JavaScript, React (optional)
+- **AI**: Google Gemini API
+- **Deployment**: Render, Docker, or traditional hosting
 
 ## 🔒 Security
 
-- CodeQL security scanning: ✅ No vulnerabilities found
-- User data is isolated by `userId`
-- Anonymous mode available
-- API key should be stored securely (use environment variables in production)
+- ✅ No API keys in code
+- ✅ Environment variable configuration
+- ✅ CodeQL security scanning passed
+- ✅ CORS configured
+- ✅ Input validation
 
-### Production Recommendations
-1. Enable authentication check in `callKodyAPI`:
-   ```javascript
-   if (!context.auth) {
-       throw new functions.https.HttpsError('unauthenticated', 'Please log in.');
-   }
-   ```
-2. Store API key in environment variables
-3. Implement rate limiting
-4. Add data retention policies
-5. Comply with data protection regulations (GDPR, etc.)
+## 📊 Project Stats
 
-## 🛠️ Development
+- **6 Test Categories** covering all major QA aspects
+- **3 API Endpoints** for full automation control
+- **AI-Powered Analysis** with actionable insights
+- **Complete Documentation** with examples
+- **Production Ready** with deployment guides
 
-### Local Development
-```bash
-# Start Firebase emulators
-firebase emulators:start
+## 🤝 Contributing
 
-# Test functions locally
-curl http://127.0.0.1:5001/kodi-backend/us-central1/systemHealth
-```
+1. Fork the repository
+2. Create feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit changes (`git commit -m 'Add amazing feature'`)
+4. Push to branch (`git push origin feature/amazing-feature`)
+5. Open Pull Request
 
-### Project Structure
-```
-dpengeneering/
-├── functions/
-│   ├── index.js              # Main Cloud Functions
-│   ├── package.json          # Dependencies
-│   └── test-learning.js      # Basic tests
-├── public/
-│   ├── index.html           # Web interface
-│   └── manifest/
-├── firestore.indexes.json   # Database indexes
-├── firestore.rules          # Security rules
-├── firebase.json            # Firebase configuration
-├── LEARNING_SYSTEM.md       # Learning system documentation
-├── USAGE_EXAMPLES.js        # API usage examples
-└── README.md               # This file
-```
+## 📝 License
 
-## 📈 Future Enhancements
+Private project - © 2024 dpengineering
 
-- [ ] Sentiment analysis for user satisfaction tracking
-- [ ] Difficulty level adaptation
-- [ ] Personalized learning paths
-- [ ] Quiz generation based on discussed topics
-- [ ] Progress visualization dashboard
-- [ ] Multi-language support expansion
-- [ ] Advanced preference learning (learning style, explanation depth)
-- [ ] Integration with code execution environments
-- [ ] Voice interface support
+## 🎉 Features Highlight
 
-## 👥 Contributing
+### For Developers
+- Complete Python SDK
+- REST API access
+- Pre-built test suites
+- Easy integration
 
-Created by Камелия (Kamelia)  
-Maintained by the dpengineering team
+### For QA Teams
+- No coding required (web UI)
+- Comprehensive reports
+- AI insights
+- Test history
 
-## 📄 License
+### For DevOps
+- One-click Render deployment
+- Docker support
+- CI/CD ready
+- Health monitoring
 
-This project is private.
+## 🚀 Deploy Now
 
-## 🙏 Acknowledgments
+Ready to test your website? 
 
-- Google Generative AI (Gemini) for AI capabilities
-- Firebase for backend infrastructure
-- The open-source community for various dependencies
+1. **Quick**: Deploy to Render in 5 minutes
+2. **Easy**: Just add your API key
+3. **Free**: Start with Render's free tier
 
-## 📞 Support
-
-For issues and questions, please open an issue in the GitHub repository.
+[Deploy to Render →](https://render.com)
 
 ---
 
-**Note**: This AI assistant is designed for educational purposes to help beginners learn programming. Always verify code suggestions and follow best practices.
+**Need Help?** Check out our [documentation](QA_TESTER_README.md) or open an issue!
+
+**Want to Contribute?** We welcome pull requests!
+
+**Like this project?** Give it a ⭐ on GitHub!

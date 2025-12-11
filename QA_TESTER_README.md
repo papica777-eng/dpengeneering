@@ -101,10 +101,9 @@ pip install -r requirements.txt
 playwright install chromium
 ```
 
-4. **Set up environment variables (Optional)**
+4. **Set up environment variables (Required)**
 ```bash
-# SECURITY NOTE: The application includes a default API key for demo purposes
-# For production use, set your own Gemini API key:
+# Get your Gemini API key from: https://makersuite.google.com/app/apikey
 export GEMINI_API_KEY='your-actual-api-key-here'
 ```
 

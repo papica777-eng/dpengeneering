@@ -32,13 +32,13 @@ playwright install chromium
 
 ### 3. Setup Gemini API Key
 
-Set the environment variable:
+Set the environment variable with your own Gemini API key:
 
 ```bash
-export GEMINI_API_KEY='AIzaSyD-V5YcHFaQ7oqsKFFLt8Gg-rTf3IRW24U'
+export GEMINI_API_KEY='your-gemini-api-key-here'
 ```
 
-Or the API key will default to the one provided in the code.
+Get your API key from: https://makersuite.google.com/app/apikey
 
 ### 4. Run the Backend
 

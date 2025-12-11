@@ -23,7 +23,7 @@ Successfully implemented a comprehensive, AI-powered QA testing platform that au
 ✅ **Domain**: Configured for dpengeneering.site  
 ✅ **Test cases**: Comprehensive test suite library  
 ✅ **Auto bug search**: AI-powered bug detection like a real person  
-✅ **Gemini API**: Integrated with key AIzaSyD-V5YcHFaQ7oqsKFFLt8Gg-rTf3IRW24U
+✅ **Gemini API**: Integrated with Google Gemini API (requires API key)
 
 ---
 
@@ -368,7 +368,7 @@ Successfully implemented a comprehensive, AI-powered QA testing platform that au
 ## AI-Powered Features
 
 ### Gemini AI Integration
-**API Key**: AIzaSyD-V5YcHFaQ7oqsKFFLt8Gg-rTf3IRW24U
+**Setup**: Requires Google Gemini API key (set via GEMINI_API_KEY environment variable)
 
 **Capabilities**:
 1. **Test Result Analysis**: AI reviews all test outcomes
