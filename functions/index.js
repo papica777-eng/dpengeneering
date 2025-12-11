@@ -13,12 +13,16 @@ const db = admin.firestore();
 // За локална разработка, използвай .runtimeconfig.json (виж README.md)
 const API_KEY = functions.config().gemini?.apikey || process.env.GEMINI_API_KEY;
 
-if (!API_KEY) {
+// Initialize AI only if API key is configured
+let genAI = null;
+let model = null;
+
+if (API_KEY) {
+    genAI = new GoogleGenerativeAI(API_KEY);
+    model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+} else {
     console.error('ГРЕШКА: Gemini API ключ не е конфигуриран. Използвай: firebase functions:config:set gemini.apikey="YOUR_KEY"');
 }
-
-const genAI = new GoogleGenerativeAI(API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 const systemPrompt = `Ти си "Коди" - експертен бот-асистент по програмиране за начинаещи.
 Целта ти е да помагаш с HTML, CSS, JavaScript и Python.
@@ -35,6 +39,14 @@ exports.callKodyAPI = functions.https.onCall(async (data, context) => {
     // if (!context.auth) {
     //    throw new functions.https.HttpsError('unauthenticated', 'Моля, влезте в системата.');
     // }
+    
+    // Проверка дали API ключът е конфигуриран
+    if (!model) {
+        throw new functions.https.HttpsError(
+            'failed-precondition',
+            'Gemini API ключът не е конфигуриран. Моля, конфигурирайте го с: firebase functions:config:set gemini.apikey="YOUR_KEY"'
+        );
+    }
     
     const history = data.chatHistory || [];
     const userParts = data.userParts || [];
