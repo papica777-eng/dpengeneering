@@ -2044,9 +2044,39 @@
 
         }
 
+        function parseRepositoryList(rawInput) {
+
+            if (typeof rawInput !== 'string') {
+
+                return [];
+
+            }
+
+            return rawInput
+
+                .split(/[,\r\n]+\s*/)
+
+                .map((s) => s.trim())
+
+                .filter(Boolean);
+
+        }
+
         function sanitizeRepositoryList(rawList) {
 
-            return (rawList || [])
+            let repoArray = [];
+
+            if (typeof rawList === 'string') {
+
+                repoArray = parseRepositoryList(rawList);
+
+            } else if (Array.isArray(rawList)) {
+
+                repoArray = rawList;
+
+            }
+
+            return (repoArray || [])
 
                 .map((repo) => {
 
@@ -2125,7 +2155,7 @@
 
             const targetUrl = targetUrlInput.value;
 
-            const rawRepoEntries = (repoLinksInput?.value || '').split(/[,\r\n]+\s*/).filter(Boolean);
+            const rawRepoEntries = parseRepositoryList(repoLinksInput?.value || '');
 
             const connectedRepos = sanitizeRepositoryList(rawRepoEntries);
 
