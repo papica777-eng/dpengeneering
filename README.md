@@ -4,9 +4,23 @@
 
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com)
 
-## 🚀 Quick Start
+## 🚀 START THE APP (ONE COMMAND!)
 
-### Option 1: Deploy to Render (Recommended)
+### Super Quick Start
+
+```bash
+# 1. Get API key from: https://makersuite.google.com/app/apikey
+export GEMINI_API_KEY='your-api-key-here'
+
+# 2. Start it!
+./START.sh
+```
+
+**That's it!** Server runs at `http://localhost:5000` 🎉
+
+> **Demo mode**: Run `./START.sh --demo` to see setup steps without starting
+
+### Alternative: Deploy to Render (5 Minutes)
 
 Click the button above or follow these steps:
 
@@ -20,7 +34,7 @@ Click the button above or follow these steps:
 
 Your backend will be live at `https://your-app.onrender.com`
 
-### Option 2: Local Development
+### Manual Setup (If Needed)
 
 ```bash
 # Clone repository
