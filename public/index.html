@@ -1949,11 +1949,11 @@
 
                     <div class="form-group">
 
-                        <label for="repoLinks"><i class="fas fa-code-branch"></i> Connected Repositories:</label>
+                        <label for="repoLinks" id="repoLinksLabel"><i class="fas fa-code-branch"></i> Connected Repositories:</label>
 
-                        <textarea id="repoLinks" rows="3" placeholder="https://github.com/org/repo-one&#10;https://gitlab.com/team/repo-two"></textarea>
+                        <textarea id="repoLinks" rows="3" aria-label="Connected repositories" aria-labelledby="repoLinksLabel" aria-describedby="repoLinksHelp" placeholder="https://github.com/org/repo-one, https://gitlab.com/team/repo-two"></textarea>
 
-                        <small style="color: var(--subtle-text-color); display: block; margin-top: 5px;">Enter one repository URL per line (or comma-separated) to link external projects for hybrid QA.</small>
+                        <small id="repoLinksHelp" style="color: var(--subtle-text-color); display: block; margin-top: 5px;">Enter one repository URL per line (or comma-separated) to link external projects for hybrid QA.</small>
 
                     </div>
 
@@ -2044,6 +2044,56 @@
 
         }
 
+        function sanitizeRepositoryList(rawList) {
+
+            return (rawList || [])
+
+                .map((repo) => {
+
+                    if (typeof repo === 'string') {
+
+                        return repo.trim();
+
+                    }
+
+                    if (repo && typeof repo === 'object' && 'href' in repo) {
+
+                        return String(repo.href).trim();
+
+                    }
+
+                    return '';
+
+                })
+
+                .filter(Boolean)
+
+                .map((repo) => {
+
+                    try {
+
+                        const url = new URL(repo);
+
+                        if (url.protocol === 'https:') {
+
+                            return { href: url.href, hostname: url.hostname };
+
+                        }
+
+                        return null;
+
+                    } catch (e) {
+
+                        return null;
+
+                    }
+
+                })
+
+                .filter(Boolean);
+
+        }
+
 
         // --- Task Assignment (PLAN & EXECUTE) ---
 
@@ -2075,14 +2125,11 @@
 
             const targetUrl = targetUrlInput.value;
 
-            const connectedRepos = (repoLinksInput?.value || '')
-                .split(/[\n,]/)
-                .map(repo => repo.trim())
-                .filter(repo => repo.length > 0);
+            const rawRepoEntries = (repoLinksInput?.value || '').split(/[,\r\n]+\s*/).filter(Boolean);
 
-            if (repoLinksInput) {
-                localStorage.setItem('repoLinks', repoLinksInput.value);
-            }
+            const connectedRepos = sanitizeRepositoryList(rawRepoEntries);
+
+            const connectedRepoLabels = connectedRepos.map((repo) => repo.hostname);
 
 
             // Get all selected checkboxes and map their values to an object
@@ -2110,9 +2157,9 @@
 
             log(`✨ Initializing Project: '${projectName}' for ${targetUrl}...`, 'info');
 
-            if (connectedRepos.length > 0) {
+            if (connectedRepoLabels.length > 0) {
 
-                log(`🔗 Connecting to linked repositories: ${connectedRepos.join(', ')}`, 'info');
+                log(`🔗 Connecting to linked repositories: ${connectedRepoLabels.join(', ')}`, 'info');
 
             }
 
@@ -2146,7 +2193,7 @@
 
                         target_url: targetUrl,
 
-                        linked_repositories: connectedRepos,
+                        linked_repositories: connectedRepos.map((repo) => repo.href),
 
                         selected_goals: selectedGoals,
 
@@ -2430,6 +2477,24 @@
 
                     }
 
+                    const safeLinkedRepos = sanitizeRepositoryList(Array.isArray(project.linked_repositories) ? project.linked_repositories : []);
+
+                    const linkedReposMarkup = safeLinkedRepos.map((repo) => {
+
+                        const anchor = document.createElement('a');
+
+                        anchor.href = repo.href;
+
+                        anchor.target = '_blank';
+
+                        anchor.rel = 'noopener noreferrer';
+
+                        anchor.textContent = repo.href;
+
+                        return anchor.outerHTML;
+
+                    }).join(', ');
+
 
                     projectDiv.innerHTML = `
 
@@ -2445,11 +2510,11 @@
 
                         </p>
 
-                        ${project.linked_repositories && project.linked_repositories.length ? `
+                        ${safeLinkedRepos.length ? `
 
                         <p style="font-size: 0.9em; margin-bottom: 5px;">
 
-                            <strong>Linked Repositories:</strong> ${project.linked_repositories.map((repo) => `<a href="${repo}" target="_blank">${repo}</a>`).join(', ')}
+                            <strong>Linked Repositories:</strong> ${linkedReposMarkup}
 
                         </p>
 
