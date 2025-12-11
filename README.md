@@ -227,6 +227,7 @@ The system tracks 20+ programming keywords:
 - **[USAGE_EXAMPLES.js](USAGE_EXAMPLES.js)** - Code examples for all API functions
 - **[REPOSITORY_SECURITY.md](REPOSITORY_SECURITY.md)** - Security hardening guide and setup instructions
 - **[SECURITY_SUMMARY.md](SECURITY_SUMMARY.md)** - CodeQL security scan results
+- **[DEPLOYMENT_CHECKLIST.md](DEPLOYMENT_CHECKLIST.md)** - Pre and post-deployment security checklist
 
 ## 🧪 Testing
 
