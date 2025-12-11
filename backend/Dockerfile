@@ -53,9 +53,9 @@ EXPOSE 5000
 ENV FLASK_ENV=production
 ENV PYTHONUNBUFFERED=1
 
-# Health check
+# Health check using wget (available in base image)
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-    CMD python -c "import requests; requests.get('http://localhost:5000/api/health')"
+    CMD wget --quiet --tries=1 --spider http://localhost:${PORT:-5000}/api/health || exit 1
 
 # Run the application
 CMD ["python", "app.py"]

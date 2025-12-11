@@ -23,8 +23,15 @@ def test_api_key_security():
     print("="*60)
     
     # Check app.py
-    with open('app.py', 'r') as f:
-        app_content = f.read()
+    try:
+        with open('app.py', 'r') as f:
+            app_content = f.read()
+    except FileNotFoundError:
+        print_test("app.py exists", False, "File not found")
+        return False
+    except Exception as e:
+        print_test("app.py readable", False, str(e))
+        return False
     
     # Should not have hardcoded API key
     test1 = 'AIzaSyD' not in app_content

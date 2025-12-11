@@ -188,4 +188,5 @@ if __name__ == '__main__':
     # SECURITY NOTE: Debug mode should be disabled in production
     # Set FLASK_ENV=production and use a proper WSGI server like gunicorn
     debug_mode = os.environ.get('FLASK_ENV', 'development') == 'development'
-    app.run(host='0.0.0.0', port=5000, debug=debug_mode)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=debug_mode)
