@@ -37,24 +37,39 @@ An intelligent Firebase Cloud Functions-based AI assistant that learns from ever
    cd dpengeneering
    ```
 
-2. **Install dependencies**
+2. **Install backend dependencies**
    ```bash
    cd functions
    npm install
+   cd ..
    ```
 
-3. **Configure API Key**
+3. **Install frontend dependencies**
+   ```bash
+   cd client
+   npm install
+   cd ..
+   ```
+
+4. **Configure API Key**
    Edit `functions/index.js` and replace the API key:
    ```javascript
    const API_KEY = "YOUR_GEMINI_API_KEY_HERE";
    ```
 
-4. **Deploy to Firebase**
+5. **Build the React frontend**
    ```bash
-   firebase deploy --only functions
+   cd client
+   npm run build
+   cd ..
    ```
 
-5. **Deploy Firestore indexes**
+6. **Deploy to Firebase**
+   ```bash
+   firebase deploy --only functions,hosting
+   ```
+
+7. **Deploy Firestore indexes**
    ```bash
    firebase deploy --only firestore:indexes
    ```
@@ -240,7 +255,15 @@ node test-learning.js
 
 ## 🛠️ Development
 
-### Local Development
+
+**Frontend Development:**
+```bash
+# Start React development server
+cd client
+npm start
+```
+
+**Backend Development:**
 ```bash
 # Start Firebase emulators
 firebase emulators:start
@@ -251,20 +274,28 @@ curl http://127.0.0.1:5001/kodi-backend/us-central1/systemHealth
 
 ### Project Structure
 ```
-dpengeneering/
-├── functions/
-│   ├── index.js              # Main Cloud Functions
-│   ├── package.json          # Dependencies
-│   └── test-learning.js      # Basic tests
-├── public/
-│   ├── index.html           # Web interface
+dpengineering/
+├── client/                  # React Frontend
+│   ├── src/
+│   │   ├── App.js          # Main React component
+│   │   ├── App.css         # Styles
+│   │   └── index.js        # Entry point
+│   ├── public/             # Static assets
+│   ├── build/              # Production build (generated)
+│   └── package.json        # Frontend dependencies
+├── functions/              # Firebase Backend
+│   ├── index.js           # Main Cloud Functions
+│   ├── package.json       # Backend dependencies
+│   └── test-learning.js   # Basic tests
+├── public/                # Legacy static HTML (preserved)
+│   ├── index.html        # Original web interface
 │   └── manifest/
-├── firestore.indexes.json   # Database indexes
-├── firestore.rules          # Security rules
-├── firebase.json            # Firebase configuration
-├── LEARNING_SYSTEM.md       # Learning system documentation
-├── USAGE_EXAMPLES.js        # API usage examples
-└── README.md               # This file
+├── firestore.indexes.json # Database indexes
+├── firestore.rules        # Security rules
+├── firebase.json          # Firebase configuration
+├── LEARNING_SYSTEM.md     # Learning system documentation
+├── USAGE_EXAMPLES.js      # API usage examples
+└── README.md             # This file
 ```
 
 ## 📈 Future Enhancements
