@@ -8,8 +8,14 @@ if (!admin.apps.length) {
 }
 const db = admin.firestore();
 
-// --- ВАЖНО: СЛОЖИ ТВОЯ API КЛЮЧ ТУК ---
-const API_KEY = "ТВОЯТ_КЛЮЧ_ТУК"; 
+// --- ВАЖНО: API ключът се взема от Firebase Functions config ---
+// Настрой го с: firebase functions:config:set gemini.apikey="YOUR_API_KEY_HERE"
+// За локална разработка, използвай .runtimeconfig.json (виж README.md)
+const API_KEY = functions.config().gemini?.apikey || process.env.GEMINI_API_KEY;
+
+if (!API_KEY) {
+    console.error('ГРЕШКА: Gemini API ключ не е конфигуриран. Използвай: firebase functions:config:set gemini.apikey="YOUR_KEY"');
+}
 
 const genAI = new GoogleGenerativeAI(API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });

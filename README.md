@@ -43,11 +43,26 @@ An intelligent Firebase Cloud Functions-based AI assistant that learns from ever
    npm install
    ```
 
-3. **Configure API Key**
-   Edit `functions/index.js` and replace the API key:
-   ```javascript
-   const API_KEY = "YOUR_GEMINI_API_KEY_HERE";
+3. **Configure API Key Securely**
+   
+   **For Production**:
+   ```bash
+   firebase functions:config:set gemini.apikey="YOUR_GEMINI_API_KEY_HERE"
    ```
+   
+   **For Local Development**:
+   Create `functions/.runtimeconfig.json`:
+   ```json
+   {
+     "gemini": {
+       "apikey": "YOUR_LOCAL_DEVELOPMENT_KEY"
+     }
+   }
+   ```
+   
+   ⚠️ **IMPORTANT**: Never commit API keys to source code. The `.runtimeconfig.json` file is already in `.gitignore`.
+   
+   See [REPOSITORY_SECURITY.md](REPOSITORY_SECURITY.md) for detailed security setup.
 
 4. **Deploy to Firebase**
    ```bash
@@ -210,6 +225,8 @@ The system tracks 20+ programming keywords:
 
 - **[LEARNING_SYSTEM.md](LEARNING_SYSTEM.md)** - Comprehensive documentation of the learning system
 - **[USAGE_EXAMPLES.js](USAGE_EXAMPLES.js)** - Code examples for all API functions
+- **[REPOSITORY_SECURITY.md](REPOSITORY_SECURITY.md)** - Security hardening guide and setup instructions
+- **[SECURITY_SUMMARY.md](SECURITY_SUMMARY.md)** - CodeQL security scan results
 
 ## 🧪 Testing
 
@@ -221,22 +238,29 @@ node test-learning.js
 
 ## 🔒 Security
 
-- CodeQL security scanning: ✅ No vulnerabilities found
-- User data is isolated by `userId`
-- Anonymous mode available
-- API key should be stored securely (use environment variables in production)
+### Current Security Status
+- ✅ **API Keys Secured**: No hardcoded secrets in source code
+- ✅ **Source Code Protected**: Functions source not deployed to hosting
+- ✅ **CodeQL Scanning**: No vulnerabilities found
+- ✅ **Data Isolation**: User data separated by `userId`
+- ⚠️ **Repository Visibility**: Must be set to Private (see [REPOSITORY_SECURITY.md](REPOSITORY_SECURITY.md))
+- ⚠️ **Authentication**: Disabled for development (enable for production)
 
-### Production Recommendations
-1. Enable authentication check in `callKodyAPI`:
-   ```javascript
-   if (!context.auth) {
-       throw new functions.https.HttpsError('unauthenticated', 'Please log in.');
-   }
-   ```
-2. Store API key in environment variables
-3. Implement rate limiting
-4. Add data retention policies
-5. Comply with data protection regulations (GDPR, etc.)
+### Security Implementation
+- **API Key Management**: Uses Firebase Functions config (`gemini.apikey`)
+- **Environment Variables**: `.runtimeconfig.json` for local development (gitignored)
+- **Anonymous Mode**: Available for testing
+- **Deployment Security**: Only `public/` folder accessible via hosting
+
+### Production Security Checklist
+1. ✅ API keys stored in Firebase Functions config (not in code)
+2. ⚠️ Make repository private (see [REPOSITORY_SECURITY.md](REPOSITORY_SECURITY.md))
+3. ⚠️ Enable authentication in `callKodyAPI`
+4. [ ] Implement rate limiting
+5. [ ] Add data retention policies
+6. [ ] GDPR compliance measures
+
+**📖 Complete Security Guide**: See [REPOSITORY_SECURITY.md](REPOSITORY_SECURITY.md) for detailed instructions.
 
 ## 🛠️ Development
 

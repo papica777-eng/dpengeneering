@@ -1,5 +1,35 @@
 # Security Summary
 
+## 🔒 Security Hardening Update (December 2024)
+
+**Status**: ✅ **SECURITY IMPROVEMENTS IMPLEMENTED**
+
+### Recent Security Changes
+
+#### ✅ API Key Security (COMPLETED)
+- **Before**: API key was hardcoded as placeholder in `functions/index.js`
+- **After**: API key now reads from Firebase Functions config
+- **Implementation**: 
+  - Uses `functions.config().gemini.apikey` for production
+  - Falls back to `process.env.GEMINI_API_KEY` for local dev
+  - Added `.runtimeconfig.json` support for local development (gitignored)
+  - Created `.runtimeconfig.json.example` template
+- **Documentation**: Complete setup guide in [REPOSITORY_SECURITY.md](REPOSITORY_SECURITY.md)
+
+#### ⚠️ Repository Visibility (ACTION REQUIRED)
+- **Current**: Repository is PUBLIC
+- **Required**: Make repository PRIVATE
+- **Instructions**: See [REPOSITORY_SECURITY.md](REPOSITORY_SECURITY.md) for step-by-step guide
+- **Impact**: Hides all source code and configuration from non-collaborators
+
+#### ✅ Deployment Security (VERIFIED)
+- **Status**: Properly configured
+- **Verified**: Only `public/` folder deployed to hosting
+- **Verified**: Functions source code NOT accessible via hosting
+- **Verified**: Configuration files properly ignored
+
+---
+
 ## CodeQL Security Scan Results
 
 **Status**: ✅ **PASSED**
@@ -67,10 +97,12 @@ The following files were analyzed:
    }
    ```
 
-2. **Secure API Key**
-   - Move API key to environment variables
-   - Use Firebase Functions config or Secret Manager
-   - Never commit API keys to repository
+2. **Secure API Key** ✅ **COMPLETED**
+   - ✅ API key removed from source code
+   - ✅ Now uses Firebase Functions config: `functions.config().gemini.apikey`
+   - ✅ Falls back to environment variable: `process.env.GEMINI_API_KEY`
+   - ✅ Configuration instructions in REPOSITORY_SECURITY.md
+   - ⚠️ **Action Required**: Set API key with `firebase functions:config:set gemini.apikey="YOUR_KEY"`
 
 3. **Implement Rate Limiting**
    - Prevent abuse of API calls
