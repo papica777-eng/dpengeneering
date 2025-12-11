@@ -48,23 +48,25 @@ echo -e "${GREEN}🚀 Starting QA Tester Application...${NC}\n"
 
 # Step 1: Check API Key
 echo -e "${YELLOW}Step 1: Checking API key...${NC}"
+
+# Try to load from .env file if not in environment
+if [ -z "$GEMINI_API_KEY" ] && [ -f ".env" ]; then
+    echo "Loading API key from .env file..."
+    set -a
+    source .env
+    set +a
+fi
+
 if [ -z "$GEMINI_API_KEY" ]; then
-    echo -e "${RED}❌ GEMINI_API_KEY environment variable is not set${NC}"
+    echo -e "${RED}❌ GEMINI_API_KEY is not configured${NC}"
     echo ""
-    echo "To start the application, you need a Gemini API key:"
+    echo "Quick setup: Run ${GREEN}../SETUP_API_KEY.sh${NC} for interactive setup"
     echo ""
-    echo "1. Get your API key:"
-    echo "   Visit: ${BLUE}https://makersuite.google.com/app/apikey${NC}"
-    echo "   Click 'Create API Key'"
-    echo "   Copy your key"
+    echo "Or manually:"
+    echo "1. Get API key: ${BLUE}https://makersuite.google.com/app/apikey${NC}"
+    echo "2. Set it: ${GREEN}export GEMINI_API_KEY='your-key'${NC}"
+    echo "3. Run: ${GREEN}../START.sh${NC}"
     echo ""
-    echo "2. Set the environment variable:"
-    echo "   ${GREEN}export GEMINI_API_KEY='your-api-key-here'${NC}"
-    echo ""
-    echo "3. Run this script again:"
-    echo "   ${GREEN}./START.sh${NC}"
-    echo ""
-    echo -e "${YELLOW}Or run in demo mode to see setup: ./START.sh --demo${NC}"
     exit 1
 else
     echo -e "${GREEN}✅ API key is configured${NC}\n"
@@ -104,7 +106,7 @@ if lsof -Pi :5000 -sTCP:LISTEN -t >/dev/null 2>&1; then
     echo ""
     echo "Options:"
     echo "1. Stop the process using port 5000"
-    echo "2. Use a different port: ${GREEN}PORT=8000 ./START.sh${NC}"
+    echo "2. Use a different port: ${GREEN}PORT=8000 ../START.sh${NC}"
     exit 1
 else
     echo -e "${GREEN}✅ Port 5000 is available${NC}\n"

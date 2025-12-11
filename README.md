@@ -4,21 +4,38 @@
 
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com)
 
-## 🚀 START THE APP (ONE COMMAND!)
+## 🚀 START THE APP (EASIEST METHOD!)
 
-### Super Quick Start
+### Interactive Setup (Recommended)
 
 ```bash
-# 1. Get API key from: https://makersuite.google.com/app/apikey
+# 1. Setup API key (interactive, guided)
+./SETUP_API_KEY.sh
+
+# 2. Start the app!
+./START.sh
+```
+
+**That's it!** Server runs at `http://localhost:5000` 🎉
+
+The setup script will:
+- Guide you to get a free Gemini API key
+- Save it securely in `.env` file
+- Prepare everything to run
+
+### Quick Manual Start
+
+```bash
+# 1. Get API key: https://makersuite.google.com/app/apikey
 export GEMINI_API_KEY='your-api-key-here'
 
 # 2. Start it!
 ./START.sh
 ```
 
-**That's it!** Server runs at `http://localhost:5000` 🎉
-
-> **Demo mode**: Run `./START.sh --demo` to see setup steps without starting
+> **Demo mode**: Run `./START.sh --demo` to check setup without starting
+> 
+> **API Key Help**: See [API_KEY_SETUP.md](API_KEY_SETUP.md) for detailed setup options
 
 ### Alternative: Deploy to Render (5 Minutes)
 
@@ -132,14 +149,19 @@ Optional:
 2. Sign in with Google account
 3. Click "Create API Key"
 4. Copy your key
-5. Set as environment variable
+5. Use setup script: `./SETUP_API_KEY.sh`
+
+**Security**: Never commit API keys! Use `.env` file or environment variables.
 
 ## 📚 Documentation
 
+- **[API_KEY_SETUP.md](API_KEY_SETUP.md)** - Complete API key setup guide
+- **[START_APP.md](START_APP.md)** - All startup methods
+- **[QUICKSTART.md](QUICKSTART.md)** - 5-minute setup guide
+- **[RENDER_DEPLOYMENT.md](RENDER_DEPLOYMENT.md)** - Cloud deployment
 - **[QA_TESTER_README.md](QA_TESTER_README.md)** - Complete feature guide
 - **[DEPLOYMENT.md](DEPLOYMENT.md)** - Self-hosting guide (Nginx, SSL)
 - **[USAGE_GUIDE.md](USAGE_GUIDE.md)** - Step-by-step tutorial
-- **[backend/README.md](backend/README.md)** - API reference
 
 ## 🏗️ Architecture
 
@@ -163,6 +185,7 @@ Playwright  Selenium  Gemini AI
 
 - ✅ No API keys in code
 - ✅ Environment variable configuration
+- ✅ `.env` file support (in `.gitignore`)
 - ✅ CodeQL security scanning passed
 - ✅ CORS configured
 - ✅ Input validation
@@ -207,15 +230,29 @@ Private project - © 2024 dpengineering
 - CI/CD ready
 - Health monitoring
 
-## 🚀 Deploy Now
+## 🚀 Quick Commands
 
-Ready to test your website? 
+```bash
+# Interactive setup (recommended)
+./SETUP_API_KEY.sh
 
-1. **Quick**: Deploy to Render in 5 minutes
-2. **Easy**: Just add your API key
-3. **Free**: Start with Render's free tier
+# Start the app
+./START.sh
 
-[Deploy to Render →](https://render.com)
+# Demo mode (check setup)
+./START.sh --demo
+
+# Manual API key
+export GEMINI_API_KEY='your-key'
+./START.sh
+```
+
+## 🆘 Need Help?
+
+- Check [API_KEY_SETUP.md](API_KEY_SETUP.md) for API key issues
+- Run `./START.sh --demo` to see what's needed
+- See [QUICKSTART.md](QUICKSTART.md) for step-by-step guide
+- Open an issue on GitHub
 
 ---
 
