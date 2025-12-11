@@ -1719,6 +1719,22 @@
 
                 document.getElementById('targetUrl').addEventListener('input', (e) => validateInput(e.target, 'Target URL is required.'));
 
+                const repoLinksInput = document.getElementById('repoLinks');
+
+                if (repoLinksInput) {
+
+                    const savedRepos = localStorage.getItem('repoLinks');
+
+                    if (savedRepos) {
+
+                        repoLinksInput.value = savedRepos;
+
+                    }
+
+                    repoLinksInput.addEventListener('input', () => localStorage.setItem('repoLinks', repoLinksInput.value));
+
+                }
+
             } else if (pageId === 'history') {
 
                 document.getElementById('refreshHistoryBtn').onclick = loadHistory;
@@ -1931,6 +1947,16 @@
 
                     </div>
 
+                    <div class="form-group">
+
+                        <label for="repoLinks"><i class="fas fa-code-branch"></i> Connected Repositories:</label>
+
+                        <textarea id="repoLinks" rows="3" placeholder="https://github.com/org/repo-one&#10;https://gitlab.com/team/repo-two"></textarea>
+
+                        <small style="color: var(--subtle-text-color); display: block; margin-top: 5px;">Enter one repository URL per line (or comma-separated) to link external projects for hybrid QA.</small>
+
+                    </div>
+
 
                     <h3>🎯 Define Automation Goals (Test Suites):</h3>
 
@@ -2027,6 +2053,8 @@
 
             const targetUrlInput = document.getElementById('targetUrl');
 
+            const repoLinksInput = document.getElementById('repoLinks');
+
            
 
             const isProjectNameValid = validateInput(projectNameInput, 'Project Name is required.');
@@ -2046,6 +2074,15 @@
             const projectName = projectNameInput.value;
 
             const targetUrl = targetUrlInput.value;
+
+            const connectedRepos = (repoLinksInput?.value || '')
+                .split(/[\n,]/)
+                .map(repo => repo.trim())
+                .filter(repo => repo.length > 0);
+
+            if (repoLinksInput) {
+                localStorage.setItem('repoLinks', repoLinksInput.value);
+            }
 
 
             // Get all selected checkboxes and map their values to an object
@@ -2072,6 +2109,12 @@
 
 
             log(`✨ Initializing Project: '${projectName}' for ${targetUrl}...`, 'info');
+
+            if (connectedRepos.length > 0) {
+
+                log(`🔗 Connecting to linked repositories: ${connectedRepos.join(', ')}`, 'info');
+
+            }
 
             log('Executing the following Test Suites:', 'info');
 
@@ -2102,6 +2145,8 @@
                         project_name: projectName,
 
                         target_url: targetUrl,
+
+                        linked_repositories: connectedRepos,
 
                         selected_goals: selectedGoals,
 
@@ -2399,6 +2444,16 @@
                             <strong>URL:</strong> <a href="${project.target_url}" target="_blank">${project.target_url}</a>
 
                         </p>
+
+                        ${project.linked_repositories && project.linked_repositories.length ? `
+
+                        <p style="font-size: 0.9em; margin-bottom: 5px;">
+
+                            <strong>Linked Repositories:</strong> ${project.linked_repositories.map((repo) => `<a href="${repo}" target="_blank">${repo}</a>`).join(', ')}
+
+                        </p>
+
+                        ` : ''}
 
                         <p style="font-size: 0.9em; margin-bottom: 10px;">
 
