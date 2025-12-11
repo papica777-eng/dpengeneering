@@ -90,8 +90,9 @@ playwright install-deps
 
 ```bash
 # Create .env file
+# IMPORTANT: Replace YOUR_ACTUAL_API_KEY with your real Gemini API key
 cat > .env << EOF
-GEMINI_API_KEY=AIzaSyD-V5YcHFaQ7oqsKFFLt8Gg-rTf3IRW24U
+GEMINI_API_KEY=YOUR_ACTUAL_API_KEY
 FLASK_ENV=production
 PORT=5000
 EOF
@@ -205,7 +206,7 @@ Type=simple
 User=www-data
 WorkingDirectory=/var/www/dpengeneering/backend
 Environment="PATH=/var/www/dpengeneering/backend/venv/bin"
-Environment="GEMINI_API_KEY=AIzaSyD-V5YcHFaQ7oqsKFFLt8Gg-rTf3IRW24U"
+EnvironmentFile=/var/www/dpengeneering/backend/.env
 ExecStart=/var/www/dpengeneering/backend/venv/bin/python app.py
 Restart=always
 RestartSec=10

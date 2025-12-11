@@ -33,9 +33,8 @@ class QAAutomation:
             'errors': []
         }
         
-        # Configure Gemini if API key is provided
-        if self.gemini_api_key:
-            genai.configure(api_key=self.gemini_api_key)
+        # Note: Gemini API key configuration is done per-request to avoid
+        # thread safety issues in multi-threaded environments
     
     def execute(self):
         """Execute all selected automation goals"""
@@ -455,6 +454,9 @@ class QAAutomation:
     def _ai_bug_detection(self):
         """Use Gemini AI to analyze results and detect potential bugs"""
         try:
+            # Configure API key for this request only (thread-safe)
+            if self.gemini_api_key:
+                genai.configure(api_key=self.gemini_api_key)
             model = genai.GenerativeModel('gemini-1.5-flash')
             
             prompt = f"""

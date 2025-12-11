@@ -16,7 +16,11 @@ app = Flask(__name__)
 CORS(app)  # Enable CORS for frontend communication
 
 # Initialize Gemini API
+# SECURITY NOTE: The API key MUST be set as an environment variable in production
+# Default value is only for development/demo purposes
 GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', 'AIzaSyD-V5YcHFaQ7oqsKFFLt8Gg-rTf3IRW24U')
+if GEMINI_API_KEY == 'AIzaSyD-V5YcHFaQ7oqsKFFLt8Gg-rTf3IRW24U':
+    app.logger.warning('Using default API key. Set GEMINI_API_KEY environment variable for production.')
 genai.configure(api_key=GEMINI_API_KEY)
 
 # Initialize test history manager
@@ -182,4 +186,7 @@ if __name__ == '__main__':
     os.makedirs('history', exist_ok=True)
     
     # Run the Flask app
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    # SECURITY NOTE: Debug mode should be disabled in production
+    # Set FLASK_ENV=production and use a proper WSGI server like gunicorn
+    debug_mode = os.environ.get('FLASK_ENV', 'development') == 'development'
+    app.run(host='0.0.0.0', port=5000, debug=debug_mode)
