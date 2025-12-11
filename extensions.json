@@ -1,0 +1,14 @@
+{
+  "extensions": {
+    "firestore-bigquery-export": {
+      "name": "firestore-bigquery-export",
+      "ref": "firebase/firestore-bigquery-export@^0.1.18",
+      "description": "Exports Firestore data to BigQuery for analytics"
+    },
+    "storage-resize-images": {
+      "name": "storage-resize-images", 
+      "ref": "firebase/storage-resize-images@^0.1.22",
+      "description": "Automatically resizes images uploaded to Cloud Storage"
+    }
+  }
+}

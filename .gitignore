@@ -67,6 +67,35 @@ node_modules/
 
 # dotenv environment variables file
 .env
+.env.local
+.env.production
+.env.development
+functions/.env
+functions/.env.local
+client/.env
+client/.env.local
+
+# API Keys and Secrets
+*.key
+*.pem
+secrets/
+.secrets
 
 # dataconnect generated files
 .dataconnect
+
+# Build output
+client/build/
+build/
+dist/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db

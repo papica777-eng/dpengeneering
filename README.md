@@ -1,53 +1,72 @@
-# Коди - AI Programming Assistant with Learning and Memory
+# 🤖 Коди - AI Programming Assistant
 
-An intelligent Firebase Cloud Functions-based AI assistant that learns from every conversation and provides personalized programming guidance.
+<div align="center">
 
-## 🚀 Features
+![Status](https://img.shields.io/badge/Status-Live-success)
+![Node](https://img.shields.io/badge/Node.js-22.x-green)
+![React](https://img.shields.io/badge/React-19.2-blue)
+![Firebase](https://img.shields.io/badge/Firebase-Cloud%20Functions-orange)
+![AI](https://img.shields.io/badge/AI-Google%20Gemini-purple)
 
-### Core Capabilities
-- **AI-Powered Programming Assistance**: Uses Google's Gemini AI to help with HTML, CSS, JavaScript, and Python
-- **Bulgarian Language Support**: Responds in Bulgarian for local users
-- **Conversational Memory**: Remembers all past interactions
-- **Continuous Learning**: Extracts and tracks programming topics from conversations
-- **Personalized Responses**: Tailors answers based on user's learning history
-- **Multi-User Support**: Maintains separate learning profiles for each user
+**An intelligent AI programming assistant with conversation memory and personalized learning**
 
-### Technical Features
-- Firebase Cloud Functions backend
-- Firestore database for conversation storage
-- Google Generative AI (Gemini) integration
-- RESTful API endpoints
-- Callable Cloud Functions for client integration
-- Automatic topic extraction and categorization
-- Session management
+[Live Demo](https://dpengineering.site) · [Portfolio Details](PORTFOLIO.md) · [Deploy Guide](RENDER_DEPLOYMENT.md)
 
-## 📦 Installation
+</div>
+
+---
+
+## 💼 Portfolio Project
+
+This is a **full-stack AI application** demonstrating modern web development practices, cloud architecture, and AI integration. 
+
+**🎯 View Complete Portfolio Breakdown:** [PORTFOLIO.md](PORTFOLIO.md)
+
+### Project Highlights
+
+- ✅ **Full-Stack Development** - React frontend + Node.js backend
+- ✅ **AI Integration** - Google Gemini API with context management  
+- ✅ **Cloud Architecture** - Firebase Functions + Firestore database
+- ✅ **Production Deployed** - Live at [dpengineering.site](https://dpengineering.site)
+- ✅ **Comprehensive Docs** - 10+ guides covering all aspects
+- ✅ **Zero Cost** - Deployed using free tiers
+
+---
+
+## 📋 Project Overview
+
+**Коди** is an intelligent AI programming assistant that provides personalized coding help in Bulgarian. It features conversation memory, topic tracking, and adaptive learning capabilities.
+
+### ✨ Core Features
+
+- 🧠 **Intelligent Learning** - Tracks topics and adapts responses
+- 💬 **Conversational Memory** - Remembers all past interactions  
+- 📊 **User Profiles** - Individual learning profiles per user
+- 🔥 **Scalable Backend** - Firebase Cloud Functions + Firestore
+- ⚡ **Real-time AI** - Fast responses using Google Gemini
+- 🌐 **Production Ready** - Deployed with custom domain & SSL
+
+---
+
+## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js 22.x (note: currently running on Node 20.x with warnings)
-- Firebase CLI
-- Google Cloud account
-- Gemini API key
 
-### Setup Steps
+- Node.js 18+ and npm 9+
+- Firebase CLI: `npm install -g firebase-tools`
+- Gemini API key from [Google AI Studio](https://aistudio.google.com/app/apikey)
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/papica777-eng/dpengeneering.git
-   cd dpengeneering
-   ```
+### One-Command Start
 
-2. **Install backend dependencies**
-   ```bash
-   cd functions
-   npm install
-   cd ..
-   ```
+```bash
+# Install all dependencies
+npm run install:all
 
-3. **Install frontend dependencies**
-   ```bash
-   cd client
-   npm install
+# Set your API key
+echo "GEMINI_API_KEY=your_api_key_here" > functions/.env
+
+# Start everything
+npm start
    cd ..
    ```
 
@@ -74,29 +93,86 @@ An intelligent Firebase Cloud Functions-based AI assistant that learns from ever
    firebase deploy --only firestore:indexes
    ```
 
-## 🔧 API Functions
+## 📚 Architecture & Design
 
-### 1. `callKodyAPI` (Callable Function)
-Main function for interacting with the AI assistant.
+### System Architecture
 
-**Parameters:**
+```
+┌─────────────────────────────────┐
+│   React Frontend (Client)       │
+│   - Conversational UI            │
+│   - State Management             │
+│   - API Integration              │
+└────────────┬────────────────────┘
+             │ HTTPS
+             ↓
+┌─────────────────────────────────┐
+│   Firebase Cloud Functions       │
+│   - callKodyAPI                  │
+│   - Learning System              │
+│   - Topic Extraction             │
+└────────────┬────────────────────┘
+             │ API Calls
+             ↓
+┌─────────────────────────────────┐
+│   Google Gemini AI               │
+│   - Natural Language Processing  │
+│   - Context-Aware Responses      │
+└──────────────────────────────────┘
+             │ Store Data
+             ↓
+┌─────────────────────────────────┐
+│   Firebase Firestore             │
+│   - Conversations                │
+│   - User Learning Profiles       │
+│   - Topic Tracking               │
+└──────────────────────────────────┘
+```
+
+### Key Features Implementation
+
+**1. Learning System:**
+- Automatically extracts programming topics from conversations
+- Maintains user-specific learning profiles
+- Provides context-aware responses based on history
+
+**2. Conversation Memory:**
+- Stores all interactions in Firestore
+- Session-based tracking
+- Historical context integration
+
+**3. Multi-Language Support:**
+- Primary: Bulgarian
+- System prompts optimized for local users
+- Context-aware language handling
+
+---
+
+## 🔧 API Documentation
+
+### Core Endpoints
+
+#### `callKodyAPI` - Main AI Function
+**Method:** HTTP POST (Callable Function)
+
+**Request:**
 ```javascript
 {
-  userId: string,           // User identifier (optional, defaults to 'anonymous')
-  sessionId: string,        // Session identifier (optional)
-  chatHistory: array,       // Previous messages in the conversation
-  userParts: array         // Current user message
+  userId: string,        // User identifier
+  sessionId: string,     // Session ID
+  chatHistory: array,    // Previous messages
+  userParts: array       // Current message
 }
 ```
 
-**Returns:**
+**Response:**
 ```javascript
 {
-  text: string              // AI's response
+  text: string          // AI-generated response
 }
 ```
 
-**Example:**
+**Example Usage:**
 ```javascript
 const result = await firebase.functions().httpsCallable('callKodyAPI')({
     userId: 'user123',

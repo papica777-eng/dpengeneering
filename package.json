@@ -1,0 +1,45 @@
+{
+  "name": "dpengeneering-unified",
+  "version": "1.0.0",
+  "description": "Unified Коди AI Assistant - Complete Full-Stack Application",
+  "main": "index.js",
+  "scripts": {
+    "install:all": "npm install && cd functions && npm install && cd ../client && npm install",
+    "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
+    "start:backend": "cd functions && firebase emulators:start --only functions",
+    "start:frontend": "cd client && npm start",
+    "start:backend:prod": "cd functions && npm start",
+    "build": "cd client && npm run build",
+    "test": "cd client && npm test",
+    "test:backend": "cd functions && npm test",
+    "setup": "bash scripts/setup.sh",
+    "deploy": "firebase deploy",
+    "deploy:functions": "firebase deploy --only functions",
+    "deploy:hosting": "firebase deploy --only hosting",
+    "health": "bash scripts/health-check.sh",
+    "lint": "cd client && npm run lint",
+    "clean": "rm -rf node_modules client/node_modules functions/node_modules client/build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/papica777-eng/dpengeneering.git"
+  },
+  "keywords": [
+    "ai",
+    "chatbot",
+    "programming-assistant",
+    "firebase",
+    "react",
+    "gemini",
+    "education"
+  ],
+  "author": "Kamelia (papica777-eng)",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}
